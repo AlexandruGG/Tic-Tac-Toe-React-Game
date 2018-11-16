@@ -21,25 +21,24 @@ class Board extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
+    let boardMatrix = [];
+    for (let row = 0; row <= 2; row++) {
+      let boardRow = [];
+      for (let col = 0; col <= 2; col++) {
+        boardRows.push(
+          <span className="board-square" key={row * 3 + col}>
+            {this.renderSquare(row * 3 + col)}
+          </span>
+        );
+      }
+      boardMatrix.push(
+        <div className="board-row" key={row}>
+          {boardRow}
         </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
+      );
+    }
+
+    return <div>{boardMatrix}</div>;
   }
 }
 
@@ -99,10 +98,15 @@ class Game extends React.Component {
       const desc = move
         ? `Go to move #${move} - (${clickedSquare[0]},${clickedSquare[1]})`
         : "Go to game start";
-        
+
       return (
         <li key={move}>
-          <button style={this.state.stepNumber === move ? selected : deselected} onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button
+            style={this.state.stepNumber === move ? selected : deselected}
+            onClick={() => this.jumpTo(move)}
+          >
+            {desc}
+          </button>
         </li>
       );
     });
