@@ -32,7 +32,7 @@ class Board extends React.Component {
         );
       }
       boardMatrix.push(
-        <div className="board-row" key={row}>
+        <div className="board-square" key={row}>
           {boardRow}
         </div>
       );
@@ -85,9 +85,16 @@ class Game extends React.Component {
     });
   }
 
+  sortMoves() {
+    this.setState({
+      ascending: !this.state.ascending
+    });
+  }
+
   render() {
     const selected = { fontWeight: "bold" };
     const deselected = { fontWeight: "normal" };
+    const ascending = this.state.ascending;
 
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -122,7 +129,10 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <button onClick={() => this.sortMoves()}>
+            Ascending/Descending List
+          </button>
+          <ol>{ascending ? moves : moves.reverse()}</ol>
         </div>
       </div>
     );
