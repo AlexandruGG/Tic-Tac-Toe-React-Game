@@ -3,8 +3,16 @@ import ReactDOM from "react-dom";
 import "./index.css";
 
 function Square(props) {
+  const winningCombination = {
+    background: "#0f0"
+  };
+
   return (
-    <button className="square" onClick={props.onClick}>
+    <button
+      className="square"
+      onClick={props.onClick}
+      style={props.winningSquare ? winningCombination : null}
+    >
       {props.value}
     </button>
   );
@@ -16,6 +24,9 @@ class Board extends React.Component {
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
+        winningSquare={
+          this.props.winner && this.props.winner.includes(i) ? true : false
+        }
       />
     );
   }
@@ -94,7 +105,7 @@ class Game extends React.Component {
   render() {
     const selected = { fontWeight: "bold" };
     const deselected = { fontWeight: "normal" };
-    const ascending = this.state.ascending;
+    const ascending = !this.state.ascending;
 
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -119,13 +130,17 @@ class Game extends React.Component {
     });
 
     let status;
-    if (winner) status = "Winner: " + winner;
+    if (winner) status = "Winner: " + winner.winningPlayer;
     else status = "Next player: " + (this.state.XIsNext ? "X" : "O");
 
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} onClick={i => this.handleClick(i)} />
+          <Board
+            squares={current.squares}
+            onClick={i => this.handleClick(i)}
+            winner={winner && winner.winningSquares}
+          />
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -157,7 +172,10 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return {
+        winningPlayer: squares[a],
+        winningSquares: lines[i]
+      };
     }
   }
   return null;
